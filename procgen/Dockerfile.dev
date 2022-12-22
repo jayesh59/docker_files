@@ -15,3 +15,4 @@ RUN python -c "from procgen import ProcgenGym3Env; ProcgenGym3Env(num=1, env_nam
 RUN apt-get install -y xauth
 RUN export LC_ALL="en_US.UTF-8"
 RUN apt-get install -y xorg openbox
+RUN pip install gym
