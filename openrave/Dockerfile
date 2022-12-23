@@ -3,6 +3,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV RAVE_COMMIT=2024b03554c8dd0e82ec1c48ae1eb6ed37d0aa6e
 ENV OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
 ENV QT_X11_NO_MITSHM=1
+ENV LC_ALL="en_US.UTF-8"
 #installing Dependencies
 RUN apt-get update && apt-get install -q -y \
     build-essential \
