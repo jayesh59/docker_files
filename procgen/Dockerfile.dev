@@ -20,3 +20,8 @@ RUN apt-get install -y xauth
 RUN apt-get install -y xorg openbox
 RUN pip install gym
 RUN pip install opencv-python
+RUN apt-get update && sudo apt-get install cmake libopenmpi-dev python3-dev zlib1g-dev
+RUN pip install tensorflow==1.14
+RUN mkdir -p ~/git; cd ~/git && \
+    git clone https://github.com/openai/baselines.git && \
+    cd baselines && pip install -e .
