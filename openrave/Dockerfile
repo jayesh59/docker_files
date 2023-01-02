@@ -87,15 +87,15 @@ RUN mkdir -p ~/git; cd ~/git && \
     make install
 
 #installing ROS Kinetic
-RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu bionic main" > /etc/apt/sources.list.d/ros-latest.list' && \
-    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && \
+    apt install curl && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - && \
     apt-get update && \
     apt-get install ros-kinetic-desktop-full && \
+    apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential && \
     rosdep init && \
     rosdep update && \
     echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 RUN source ~/.bashrc
-RUN apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
 
 #setting up workspace
 WORKDIR /root
