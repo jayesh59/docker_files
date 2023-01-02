@@ -79,6 +79,7 @@ RUN pip install --upgrade --user sympy==0.7.1 && \
     
 #installing prpy and tsr and tqdm
 RUN pip install tqdm
+RUN pip install catkin-pkg
 RUN mkdir -p ~/git; cd ~/git && \
     git clone https://github.com/personalrobotics/tsr.git && \
     cd tsr && pip install -e .
