@@ -1,4 +1,5 @@
 FROM ubuntu:18.04
+# FROM osrf/ros:melodic-desktop-full
 ARG DEBIAN_FRONTEND=noninteractive
 ENV RAVE_COMMIT=2024b03554c8dd0e82ec1c48ae1eb6ed37d0aa6e
 ENV OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
@@ -13,17 +14,17 @@ RUN apt-get update && apt-get install -q -y \
     python-scipy \
     coreutils \
     nano
-RUN apt-get install -y --no-install-recommends build-essential cmake doxygen \
-    g++ git octave python-dev python-setuptools wget mlocate
+RUN apt-get install -y --no-install-recommends build-essential doxygen \
+    octave python-dev python-setuptools wget mlocate
 RUN apt-get install -y --no-install-recommends ipython python-h5py python-numpy \
-    python-pip python-wheel python-scipy
+    python-wheel qt4-dev-tools
 RUN apt-get install -y --no-install-recommends qt5-default minizip
 RUN apt-get install -y --no-install-recommends ann-tools libann-dev            \
     libassimp-dev libavcodec-dev libavformat-dev libeigen3-dev libfaac-dev          \
     libflann-dev libfreetype6-dev liblapack-dev libglew-dev libgsm1-dev             \
     libmpfi-dev  libmpfr-dev liboctave-dev libode-dev libogg-dev libpcre3-dev       \
     libqhull-dev libswscale-dev libtinyxml-dev libvorbis-dev libx264-dev            \
-    libxml2-dev libxvidcore-dev libbz2-dev
+    libxml2-dev libxvidcore-dev libbz2-dev libqt4-dev
 RUN apt-get install -y --no-install-recommends libsoqt-dev-common libsoqt4-dev
 RUN apt-get install -y --no-install-recommends libccd-dev                  \
     libcollada-dom2.4-dp-dev liblog4cxx-dev libminizip-dev octomap-tools
@@ -48,6 +49,14 @@ RUN cd ~/git && git clone https://github.com/pybind/pybind11.git  && \
     && cmake .. -DPYBIND11_TEST=OFF -DPythonLibsNew_FIND_VERSION=2 \
     && make install
 
+#install collada-dom
+RUN mkdir -p ~/git; cd ~/git && \
+    git clone https://github.com/rdiankov/collada-dom.git && \
+    cd collada-dom && mkdir build && cd build && \
+    cmake .. && \
+    make -j `nproc` && \
+    make install
+
 #install osg
 RUN mkdir -p ~/git; cd ~/git && \
     git clone https://github.com/openscenegraph/OpenSceneGraph.git && \
@@ -66,28 +75,65 @@ RUN mkdir -p ~/git; cd ~/git && \
     make install
 
 #installing Openrave
-RUN pip install --upgrade --user sympy==0.7.1 && \
-    mkdir -p ~/git; cd ~/git && \
+RUN pip install --upgrade --user sympy==0.7.1 && pip install numpy
+RUN mkdir -p ~/git; cd ~/git && \
 	git clone -b production https://github.com/rdiankov/openrave.git && \
     cd openrave; git reset --hard ${RAVE_COMMIT} && \
     mkdir build; cd build && \
     cmake -DODE_USE_MULTITHREAD=ON -DOSG_DIR=/usr/local/lib64/ \
-  		-DUSE_PYBIND11_PYTHON_BINDINGS:BOOL=TRUE 			   \
+  		-DUSE_PYBIND11_PYTHON_BINDINGS=TRUE 			   \
   		-DBoost_NO_BOOST_CMAKE=1 .. && \
     make -j `nproc` && \
     make install
-    
-#installing prpy and tsr and tqdm
-RUN pip install tqdm
-RUN mkdir -p ~/git; cd ~/git && \
-    git clone https://github.com/personalrobotics/tsr.git && \
-    cd tsr && pip install -e .
-RUN mkdir -p ~/git; cd ~/git && \
-    git clone https://github.com/personalrobotics/prpy.git && \
-    cd prpy && pip install -e .
+
+#installing ROS Kinetic
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu bionic main" > /etc/apt/sources.list.d/ros-latest.list' && \
+    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
+    apt-get update && \
+    apt-get install ros-kinetic-desktop-full && \
+    rosdep init && \
+    rosdep update && \
+    echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+RUN source ~/.bashrc
+RUN apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
+
+#setting up workspace
+WORKDIR /root
+RUN mkdir workspaces && cd workspaces
+RUN mkdir -p openrave_ws/src && \
+    cd openrave_ws && \
+    catkin_make && \
+    source devel/setup.bash
+RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
+RUN source ~/.bashrc
+RUN cd src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
+    git clone https://github.com/personalrobotics/or_urdf.git && \
+    cd or_urdf && \
+    git checkout kinetic_fixes && \
+    cd ../ && catkin_make
+RUN source devel/setup.bash
+RUN apt-get install liblapacke-dev libnewmat10* 
+RUN apt install libgsl-dev
+RUN apt-get install ros-kinetic-chomp-motion-planner && \
+    ros-kinetic-sbpl* && \
+    ros-kinetic-ompl
+RUN python2 -m pip install enum34 --user
+RUN python2 -m pip install networkx==2.2 --user
+WORKDIR /root/workspaces/openrave_ws
+RUN cd src && \
+    git clone https://github.com/personalrobotics/or_ompl && \
+    git clone https://github.com/personalrobotics/or_sbpl && \
+    git clone https://github.com/personalrobotics/or_cdchomp && \
+    git clone https://github.com/personalrobotics/comps && \
+    git clone https://github.com/personalrobotics/prpy && \
+    git clone https://github.com/personalrobotics/tsr
+RUN cd .. && \
+    catkin_make
+RUN source devel/setup.bash
 
 #install x11 files
 RUN apt-get update
 RUN apt-get install -y xauth
 RUN apt-get install -y xorg openbox
-WORKDIR /root
+
+WORKDIR /root/workspaces/openrave_ws/src
