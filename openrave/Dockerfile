@@ -88,7 +88,7 @@ RUN mkdir -p ~/git; cd ~/git && \
 
 #installing ROS Kinetic
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu bionic main" > /etc/apt/sources.list.d/ros-latest.list' && \
-    apt install curl && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - && \
+    apt install curl && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
     apt-get update && \
     apt-get install ros-kinetic-desktop-full && \
     apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential && \
