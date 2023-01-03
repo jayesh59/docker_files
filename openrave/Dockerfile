@@ -99,6 +99,8 @@ RUN mkdir -p ~/git; cd ~/git && \
 
 #setting up workspace
 WORKDIR /root
+RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+RUN source ~/.bashrc
 RUN mkdir workspaces && cd workspaces
 RUN mkdir -p openrave_ws/src && \
     cd openrave_ws && \
