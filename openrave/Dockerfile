@@ -99,7 +99,8 @@ WORKDIR /root
 RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     apt update && apt install -y libompl-dev && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
-RUN mkdir -p ~/git; cd ~/git && \
+RUN source /opt/ros/melodic/setup.bash && \
+    mkdir -p ~/git; cd ~/git && \
     git clone https://github.com/personalrobotics/or_ompl && \
     cd or_ompl && mkdir build && cd build && \
     cmake -DNO_ROS:bool=1 .. && \
