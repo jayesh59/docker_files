@@ -1,9 +1,11 @@
 # FROM ubuntu:18.04
 FROM osrf/ros:melodic-desktop-full
 ARG DEBIAN_FRONTEND=noninteractive
-ENV RAVE_COMMIT=2024b03554c8dd0e82ec1c48ae1eb6ed37d0aa6e
-ENV OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
+ARG RAVE_COMMIT=2024b03554c8dd0e82ec1c48ae1eb6ed37d0aa6e
+ARG OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
 ENV QT_X11_NO_MITSHM=1
+
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 #installing Dependencies
 RUN apt-get update && apt-get install -q -y \
     build-essential \
@@ -16,8 +18,14 @@ RUN apt-get update && apt-get install -q -y \
     nano
 RUN apt-get install -y --no-install-recommends build-essential doxygen \
     octave python-dev python-setuptools wget mlocate
+RUN apt install -y libgsl-devel
+RUN apt-get install -y ros-melodic-chomp-motion-planner \
+    ros-melodic-sbpl* \
+    ros-melodic-ompl
+RUN python2 -m pip install enum34 --user
+RUN python2 -m pip install networkx==2.2 --user
 RUN apt-get install -y --no-install-recommends ipython python-h5py python-numpy \
-    python-wheel qt4-dev-tools
+    python-wheel qt4-dev-tools liblapacke-dev libnewmat10* 
 RUN apt-get install -y --no-install-recommends qt5-default minizip
 RUN apt-get install -y --no-install-recommends ann-tools libann-dev            \
     libassimp-dev libavcodec-dev libavformat-dev libeigen3-dev libfaac-dev          \
@@ -86,20 +94,8 @@ RUN mkdir -p ~/git; cd ~/git && \
     make -j `nproc` && \
     make install
 
-# #installing ROS Kinetic
-# RUN echo "deb http://packages.ros.org/ros/ubuntu bionic main" >> /etc/apt/sources.list.d/ros-latest.list
-# RUN apt install curl && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
-#     apt-get update && \
-#     apt-get install ros-kinetic-desktop-full && \
-#     apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential && \
-#     rosdep init && \
-#     rosdep update && \
-#     echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-# RUN source ~/.bashrc
-
 #setting up workspace
 WORKDIR /root
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 RUN source ~/.bashrc
 RUN mkdir workspaces && cd workspaces
@@ -107,6 +103,12 @@ RUN source /opt/ros/melodic/setup.bash && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
+    git clone https://github.com/personalrobotics/or_ompl && \
+    git clone https://github.com/personalrobotics/or_sbpl && \
+    git clone https://github.com/personalrobotics/or_cdchomp && \
+    git clone https://github.com/personalrobotics/comps && \
+    git clone https://github.com/personalrobotics/prpy && \
+    git clone https://github.com/personalrobotics/tsr && \
    # git clone https://github.com/personalrobotics/or_urdf.git && \
    # git clone https://github.com/ros-planning/srdfdom.git && \
    # cd srdfdom && git checkout melodic-devel && \
@@ -115,32 +117,19 @@ RUN source /opt/ros/melodic/setup.bash && \
     catkin_make && \
     source devel/setup.bash
 RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
-# RUN source /opt/ros/melodic/setup.bash && \
-#     cd workspaces/openrave_ws/src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
-#     git clone https://github.com/personalrobotics/or_urdf.git && \
-#     # cd or_urdf && \
-#     # git checkout melodic_fixes && \
-#     cd .. && catkin_make
-#RUN source /root/workspaces/openrave_ws/devel/setup.bash
-RUN apt-get install -y liblapacke-dev libnewmat10* 
-RUN apt install -y libgsl-dev
-RUN apt-get install -y ros-melodic-chomp-motion-planner \
-    ros-melodic-sbpl* \
-    ros-melodic-ompl
-RUN python2 -m pip install enum34 --user
-RUN python2 -m pip install networkx==2.2 --user
 
-RUN cd /root/workspaces/openrave_ws/src && \
-    git clone https://github.com/personalrobotics/or_ompl && \
-    git clone https://github.com/personalrobotics/or_sbpl && \
-    git clone https://github.com/personalrobotics/or_cdchomp && \
-    git clone https://github.com/personalrobotics/comps && \
-    git clone https://github.com/personalrobotics/prpy && \
-    git clone https://github.com/personalrobotics/tsr
-RUN source /opt/ros/melodic/setup.bash && \
-    cd /root/workspaces/openrave_ws && \
-    catkin_make
-RUN source devel/setup.bash
+#RUN source /root/workspaces/openrave_ws/devel/setup.bash
+# RUN cd /root/workspaces/openrave_ws/src && \
+#     git clone https://github.com/personalrobotics/or_ompl && \
+#     git clone https://github.com/personalrobotics/or_sbpl && \
+#     git clone https://github.com/personalrobotics/or_cdchomp && \
+#     git clone https://github.com/personalrobotics/comps && \
+#     git clone https://github.com/personalrobotics/prpy && \
+#     git clone https://github.com/personalrobotics/tsr
+# RUN source /opt/ros/melodic/setup.bash && \
+#     cd /root/workspaces/openrave_ws && \
+#     catkin_make
+# RUN source devel/setup.bash
 
 #install x11 files
 RUN apt-get update
