@@ -96,7 +96,6 @@ RUN mkdir -p ~/git; cd ~/git && \
     make install
 
 #setting up workspace
-#WORKDIR /root
 RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     apt update && apt install -y libompl-dev && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
@@ -107,10 +106,10 @@ RUN mkdir workspaces && cd workspaces && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
-    git clone https://github.com/personalrobotics/or_ompl && \
-    git clone https://github.com/personalrobotics/or_sbpl && \
-    git clone https://github.com/personalrobotics/or_cdchomp && \
-    git clone https://github.com/personalrobotics/comps && \
+    # git clone https://github.com/personalrobotics/or_ompl && \
+    # git clone https://github.com/personalrobotics/or_sbpl && \
+    # git clone https://github.com/personalrobotics/or_cdchomp && \
+    # git clone https://github.com/personalrobotics/comps && \
     git clone https://github.com/personalrobotics/prpy && \
     git clone https://github.com/personalrobotics/tsr && \
    # git clone https://github.com/personalrobotics/or_urdf.git && \
