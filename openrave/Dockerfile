@@ -109,12 +109,12 @@ RUN source /opt/ros/melodic/setup.bash && \
     catkin_make && \
     source devel/setup.bash
 RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
-RUN source ~/.bashrc
-RUN cd src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
+RUN source /opt/ros/melodic/setup.bash && \
+    cd src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
     git clone https://github.com/personalrobotics/or_urdf.git && \
     # cd or_urdf && \
-    # git checkout melodic_fixes && cd ../ && \
-    catkin_make
+    # git checkout melodic_fixes && \
+    cd .. && catkin_make
 RUN source devel/setup.bash
 RUN apt-get install liblapacke-dev libnewmat10* 
 RUN apt install libgsl-dev
@@ -131,7 +131,8 @@ RUN cd src && \
     git clone https://github.com/personalrobotics/comps && \
     git clone https://github.com/personalrobotics/prpy && \
     git clone https://github.com/personalrobotics/tsr
-RUN cd .. && \
+RUN source /opt/ros/melodic/setup.bash && \
+    cd .. && \
     catkin_make
 RUN source devel/setup.bash
 
