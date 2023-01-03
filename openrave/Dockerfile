@@ -107,10 +107,12 @@ RUN source /opt/ros/melodic/setup.bash && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
-    git clone https://github.com/personalrobotics/or_urdf.git && \
-    git clone https://github.com/ros-planning/srdfdom.git && \
-    cd srdfdom && git checkout melodic-devel && \
-    cd ../../ && catkin_make && \
+   # git clone https://github.com/personalrobotics/or_urdf.git && \
+   # git clone https://github.com/ros-planning/srdfdom.git && \
+   # cd srdfdom && git checkout melodic-devel && \
+   # cd ../../ && \
+    cd .. && \
+    catkin_make && \
     source devel/setup.bash
 RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
 # RUN source /opt/ros/melodic/setup.bash && \
@@ -119,16 +121,16 @@ RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
 #     # cd or_urdf && \
 #     # git checkout melodic_fixes && \
 #     cd .. && catkin_make
-RUN source devel/setup.bash
-RUN apt-get install liblapacke-dev libnewmat10* 
-RUN apt install libgsl-dev
-RUN apt-get install ros-melodic-chomp-motion-planner && \
-    ros-melodic-sbpl* && \
+#RUN source /root/workspaces/openrave_ws/devel/setup.bash
+RUN apt-get install -y liblapacke-dev libnewmat10* 
+RUN apt install -y libgsl-dev
+RUN apt-get install -y ros-melodic-chomp-motion-planner \
+    ros-melodic-sbpl* \
     ros-melodic-ompl
 RUN python2 -m pip install enum34 --user
 RUN python2 -m pip install networkx==2.2 --user
-WORKDIR /root/workspaces/openrave_ws
-RUN cd src && \
+
+RUN cd /root/workspaces/openrave_ws/src && \
     git clone https://github.com/personalrobotics/or_ompl && \
     git clone https://github.com/personalrobotics/or_sbpl && \
     git clone https://github.com/personalrobotics/or_cdchomp && \
@@ -136,7 +138,7 @@ RUN cd src && \
     git clone https://github.com/personalrobotics/prpy && \
     git clone https://github.com/personalrobotics/tsr
 RUN source /opt/ros/melodic/setup.bash && \
-    cd .. && \
+    cd /root/workspaces/openrave_ws && \
     catkin_make
 RUN source devel/setup.bash
 
