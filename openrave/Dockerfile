@@ -99,13 +99,6 @@ RUN mkdir -p ~/git; cd ~/git && \
 RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     apt update && apt install -y libompl-dev && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
-#RUN source /opt/ros/melodic/setup.bash && \
-#    mkdir -p ~/git; cd ~/git && \
- #   git clone https://github.com/personalrobotics/or_ompl && \
-  #  cd or_ompl && mkdir build && cd build && \
-#    cmake -DNO_ROS:bool=1 .. && \
-  #  make -j `nproc` && \
-   # make install
 
 # RUN mkdir -p ~/git; cd ~/git && \
 #     git clone https://github.com/personalrobotics/or_sbpl && \
@@ -119,10 +112,7 @@ RUN mkdir workspaces && cd workspaces && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
-   # git clone https://github.com/personalrobotics/or_ompl && \
-   # git clone https://github.com/personalrobotics/or_sbpl && \
-   # git clone https://github.com/personalrobotics/or_cdchomp && \
-   # git clone https://github.com/personalrobotics/comps && \
+    git clone https://github.com/personalrobotics/comps && \
     git clone https://github.com/personalrobotics/prpy && \
     git clone https://github.com/personalrobotics/tsr && \
    # git clone https://github.com/personalrobotics/or_urdf.git && \
@@ -131,21 +121,19 @@ RUN mkdir workspaces && cd workspaces && \
    # cd ../../ && \
     cd .. && \
     catkin_make && \
-    source devel/setup.bash
-RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
+    source devel/setup.bash && \
+    cd src && git clone https://github.com/personalrobotics/or_ompl && \
+    cd or_ompl && mkdir build && cd build && \
+    cmake -DNO_ROS:bool=1 .. && \
+    make -j `nproc` && \
+    make install && \
+    git clone https://github.com/personalrobotics/or_ompl && \
+    git clone https://github.com/personalrobotics/or_sbpl && \
+    git clone https://github.com/personalrobotics/or_cdchomp && \
+    cd .. && \
+    catkin_make
 
-#RUN source /root/workspaces/openrave_ws/devel/setup.bash
-# RUN cd /root/workspaces/openrave_ws/src && \
-#     git clone https://github.com/personalrobotics/or_ompl && \
-#     git clone https://github.com/personalrobotics/or_sbpl && \
-#     git clone https://github.com/personalrobotics/or_cdchomp && \
-#     git clone https://github.com/personalrobotics/comps && \
-#     git clone https://github.com/personalrobotics/prpy && \
-#     git clone https://github.com/personalrobotics/tsr
-# RUN source /opt/ros/melodic/setup.bash && \
-#     cd /root/workspaces/openrave_ws && \
-#     catkin_make
-# RUN source devel/setup.bash
+RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
 
 #install x11 files
 RUN apt-get update
