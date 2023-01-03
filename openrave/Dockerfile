@@ -105,16 +105,18 @@ RUN source ~/.bashrc
 RUN mkdir workspaces && cd workspaces
 RUN source /opt/ros/melodic/setup.bash && \
     mkdir -p openrave_ws/src && \
-    cd openrave_ws && \
-    catkin_make && \
+    cd openrave_ws/src && \
+    git clone https://github.com/personalrobotics/openrave_catkin.git && \
+    git clone https://github.com/personalrobotics/or_urdf.git && \
+    cd .. && catkin_make && \
     source devel/setup.bash
 RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
-RUN source /opt/ros/melodic/setup.bash && \
-    cd workspaces/openrave_ws/src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
-    git clone https://github.com/personalrobotics/or_urdf.git && \
-    # cd or_urdf && \
-    # git checkout melodic_fixes && \
-    cd .. && catkin_make
+# RUN source /opt/ros/melodic/setup.bash && \
+#     cd workspaces/openrave_ws/src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
+#     git clone https://github.com/personalrobotics/or_urdf.git && \
+#     # cd or_urdf && \
+#     # git checkout melodic_fixes && \
+#     cd .. && catkin_make
 RUN source devel/setup.bash
 RUN apt-get install liblapacke-dev libnewmat10* 
 RUN apt install libgsl-dev
