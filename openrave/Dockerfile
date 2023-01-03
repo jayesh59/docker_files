@@ -1,5 +1,5 @@
-FROM ubuntu:18.04
-# FROM osrf/ros:melodic-desktop-full
+# FROM ubuntu:18.04
+FROM osrf/ros:melodic-desktop-full
 ARG DEBIAN_FRONTEND=noninteractive
 ENV RAVE_COMMIT=2024b03554c8dd0e82ec1c48ae1eb6ed37d0aa6e
 ENV OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
@@ -86,16 +86,16 @@ RUN mkdir -p ~/git; cd ~/git && \
     make -j `nproc` && \
     make install
 
-#installing ROS Kinetic
-RUN echo "deb http://packages.ros.org/ros/ubuntu bionic main" >> /etc/apt/sources.list.d/ros-latest.list
-RUN apt install curl && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
-    apt-get update && \
-    apt-get install ros-kinetic-desktop-full && \
-    apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential && \
-    rosdep init && \
-    rosdep update && \
-    echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-RUN source ~/.bashrc
+# #installing ROS Kinetic
+# RUN echo "deb http://packages.ros.org/ros/ubuntu bionic main" >> /etc/apt/sources.list.d/ros-latest.list
+# RUN apt install curl && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
+#     apt-get update && \
+#     apt-get install ros-kinetic-desktop-full && \
+#     apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential && \
+#     rosdep init && \
+#     rosdep update && \
+#     echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+# RUN source ~/.bashrc
 
 #setting up workspace
 WORKDIR /root
@@ -108,15 +108,15 @@ RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
 RUN source ~/.bashrc
 RUN cd src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
     git clone https://github.com/personalrobotics/or_urdf.git && \
-    cd or_urdf && \
-    git checkout kinetic_fixes && \
-    cd ../ && catkin_make
+    # cd or_urdf && \
+    # git checkout melodic_fixes && cd ../ && \
+    catkin_make
 RUN source devel/setup.bash
 RUN apt-get install liblapacke-dev libnewmat10* 
 RUN apt install libgsl-dev
-RUN apt-get install ros-kinetic-chomp-motion-planner && \
-    ros-kinetic-sbpl* && \
-    ros-kinetic-ompl
+RUN apt-get install ros-melodic-chomp-motion-planner && \
+    ros-melodic-sbpl* && \
+    ros-melodic-ompl
 RUN python2 -m pip install enum34 --user
 RUN python2 -m pip install networkx==2.2 --user
 WORKDIR /root/workspaces/openrave_ws
