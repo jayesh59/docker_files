@@ -1,5 +1,5 @@
 # FROM ubuntu:18.04
-FROM osrf/ros:melodic-desktop-full
+FROM osrf/ros:melodic-desktop-full-bionic
 ARG DEBIAN_FRONTEND=noninteractive
 ARG RAVE_COMMIT=2024b03554c8dd0e82ec1c48ae1eb6ed37d0aa6e
 ARG OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
@@ -98,13 +98,27 @@ RUN mkdir -p ~/git; cd ~/git && \
 WORKDIR /root
 RUN apt-get update && apt-get install -y libompl12 && \
     apt update && apt install -y libompl-dev && \
-    echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
-    mkdir workspaces && cd workspaces && \
+    echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
+RUN mkdir -p ~/git; cd ~/git && \
+    git clone https://github.com/personalrobotics/or_ompl && \
+    cd or_ompl && mkdir build && cd build && \
+    cmake -DNO_ROS:bool=1 .. && \
+    make -j `nproc` && \
+    make install
+
+# RUN mkdir -p ~/git; cd ~/git && \
+#     git clone https://github.com/personalrobotics/or_sbpl && \
+#     cd or_sbpl && mkdir build && cd build && \
+#     cmake .. && \
+#     make -j `nproc` && \
+#     make install
+
+RUN mkdir workspaces && cd workspaces && \
     source /opt/ros/melodic/setup.bash && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
-    git clone https://github.com/personalrobotics/or_ompl && \
+    # git clone https://github.com/personalrobotics/or_ompl && \
     git clone https://github.com/personalrobotics/or_sbpl && \
     git clone https://github.com/personalrobotics/or_cdchomp && \
     git clone https://github.com/personalrobotics/comps && \
