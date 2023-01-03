@@ -105,7 +105,7 @@ RUN source /opt/ros/melodic/setup.bash && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
-    git clone https://github.com/personalrobotics/or_ompl && \
+    # git clone https://github.com/personalrobotics/or_ompl && \
     git clone https://github.com/personalrobotics/or_sbpl && \
     git clone https://github.com/personalrobotics/or_cdchomp && \
     git clone https://github.com/personalrobotics/comps && \
@@ -119,7 +119,13 @@ RUN source /opt/ros/melodic/setup.bash && \
     catkin_make && \
     source devel/setup.bash
 RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
-
+RUN mkdir -p ~/git; cd ~/git && \
+    git clone https://github.com/personalrobotics/or_ompl && \
+    cd or_ompl && \
+    mkdir build; cd build && \
+    cmake .. && \
+    make -j `nproc` && \
+    make install
 #RUN source /root/workspaces/openrave_ws/devel/setup.bash
 # RUN cd /root/workspaces/openrave_ws/src && \
 #     git clone https://github.com/personalrobotics/or_ompl && \
