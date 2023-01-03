@@ -20,7 +20,8 @@ RUN apt-get install -y --no-install-recommends build-essential doxygen \
     octave python-dev python-setuptools wget mlocate
 RUN apt-get install -y ros-melodic-chomp-motion-planner \
     ros-melodic-sbpl* \
-    ros-melodic-ompl
+    ros-melodic-ompl \
+    ros-melodic-qt-ros
 RUN python2 -m pip install enum34 --user
 RUN python2 -m pip install networkx==2.2 --user
 RUN apt-get install -y --no-install-recommends ipython python-h5py python-numpy \
@@ -100,18 +101,16 @@ RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     apt update && apt install -y libompl-dev && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
 
-# RUN mkdir -p ~/git; cd ~/git && \
-#     git clone https://github.com/personalrobotics/or_sbpl && \
-#     cd or_sbpl && mkdir build && cd build && \
-#     cmake .. && \
-#     make -j `nproc` && \
-#     make install
 WORKDIR /root
 RUN mkdir workspaces && cd workspaces && \
     source /opt/ros/melodic/setup.bash && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
+    git clone https://github.com/personalrobotics/or_ompl && \
+    git clone https://github.com/personalrobotics/or_sbpl && \
+    git clone https://github.com/personalrobotics/or_cdchomp && \
+    git clone https://github.com/personalrobotics/comps && \
     git clone https://github.com/personalrobotics/prpy && \
     git clone https://github.com/personalrobotics/tsr && \
    # git clone https://github.com/personalrobotics/or_urdf.git && \
@@ -120,18 +119,7 @@ RUN mkdir workspaces && cd workspaces && \
    # cd ../../ && \
     cd .. && \
     catkin_make && \
-    source devel/setup.bash && \
-    cd src && git clone https://github.com/personalrobotics/or_ompl && \
-    cd or_ompl && mkdir build && cd build && \
-    cmake -DNO_ROS:bool=1 .. && \
-    make -j `nproc` && \
-    make install && \
-    git clone https://github.com/personalrobotics/or_ompl && \
-    git clone https://github.com/personalrobotics/or_sbpl && \
-    git clone https://github.com/personalrobotics/comps && \
-    git clone https://github.com/personalrobotics/or_cdchomp && \
-    cd .. && \
-    catkin_make
+    source devel/setup.bash
 
 RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
 
