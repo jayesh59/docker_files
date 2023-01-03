@@ -103,7 +103,8 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 RUN source ~/.bashrc
 RUN mkdir workspaces && cd workspaces
-RUN mkdir -p openrave_ws/src && \
+RUN source /opt/ros/melodic/setup.bash && \
+    mkdir -p openrave_ws/src && \
     cd openrave_ws && \
     catkin_make && \
     source devel/setup.bash
