@@ -96,7 +96,7 @@ RUN mkdir -p ~/git; cd ~/git && \
 
 #setting up workspace
 WORKDIR /root
-RUN apt-get update && apt-get install -y libompl12 && \
+RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     apt update && apt install -y libompl-dev && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
 RUN mkdir -p ~/git; cd ~/git && \
