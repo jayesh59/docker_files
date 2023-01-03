@@ -99,6 +99,7 @@ RUN mkdir -p ~/git; cd ~/git && \
 
 #setting up workspace
 WORKDIR /root
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 RUN source ~/.bashrc
 RUN mkdir workspaces && cd workspaces
