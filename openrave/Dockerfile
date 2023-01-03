@@ -112,7 +112,6 @@ RUN mkdir workspaces && cd workspaces && \
     mkdir -p openrave_ws/src && \
     cd openrave_ws/src && \
     git clone https://github.com/personalrobotics/openrave_catkin.git && \
-    git clone https://github.com/personalrobotics/comps && \
     git clone https://github.com/personalrobotics/prpy && \
     git clone https://github.com/personalrobotics/tsr && \
    # git clone https://github.com/personalrobotics/or_urdf.git && \
@@ -129,6 +128,7 @@ RUN mkdir workspaces && cd workspaces && \
     make install && \
     git clone https://github.com/personalrobotics/or_ompl && \
     git clone https://github.com/personalrobotics/or_sbpl && \
+    git clone https://github.com/personalrobotics/comps && \
     git clone https://github.com/personalrobotics/or_cdchomp && \
     cd .. && \
     catkin_make
