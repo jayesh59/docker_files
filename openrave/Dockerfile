@@ -96,6 +96,8 @@ RUN mkdir -p ~/git; cd ~/git && \
 
 #setting up workspace
 WORKDIR /root
+RUN apt-get update && apt-get install libompl12
+RUN apt update && apt install libompl-dev
 RUN echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 RUN source ~/.bashrc
 RUN mkdir workspaces && cd workspaces
