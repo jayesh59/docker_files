@@ -110,7 +110,7 @@ RUN source /opt/ros/melodic/setup.bash && \
     source devel/setup.bash
 RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
 RUN source /opt/ros/melodic/setup.bash && \
-    cd src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
+    cd /workspaces/openrave_ws/src && git clone https://github.com/personalrobotics/openrave_catkin.git && \
     git clone https://github.com/personalrobotics/or_urdf.git && \
     # cd or_urdf && \
     # git checkout melodic_fixes && \
