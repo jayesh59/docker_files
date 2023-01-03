@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -q -y \
     nano
 RUN apt-get install -y --no-install-recommends build-essential doxygen \
     octave python-dev python-setuptools wget mlocate
-RUN apt install -y libgsl-devel
 RUN apt-get install -y ros-melodic-chomp-motion-planner \
     ros-melodic-sbpl* \
     ros-melodic-ompl
@@ -38,6 +37,7 @@ RUN apt-get install -y --no-install-recommends libccd-dev                  \
     libcollada-dom2.4-dp-dev liblog4cxx-dev libminizip-dev octomap-tools
 RUN apt-get install -y --no-install-recommends libboost-all-dev libboost-python-dev
 RUN pip install pyopengl
+RUN apt update && apt install -y libgsl-devel
 RUN mkdir -p ~/git && \
     cd ~/git && git clone https://github.com/Tencent/rapidjson.git && \
     cd rapidjson && mkdir build && cd build && \
