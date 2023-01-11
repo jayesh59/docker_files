@@ -1,0 +1,35 @@
+{
+  "name": "openrave_gui",
+  "image": "openrave_gui:v0",
+  // "build": { "dockerfile": "Dockerfile" },
+  "containerEnv": {
+    "DISPLAY":"${localEnv:DISPLAY}"
+    // "HOSTNAME":"en4113965l"
+  },
+
+  // "remoteEnv": {
+  //   "HOSTNAME": "${localEnv:HOSTNAME}"
+  // },
+  "runArgs": ["--hostname=en4113965l"],
+  
+  "mounts": [
+  "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+  "source=${localEnv:HOME}/.Xauthority,target=/root/.Xauthority,type=bind,consistency=cached"
+  ],
+
+  "customizations": {
+    "vscode": {
+      // "settings": {
+      //   "terminal.integrated.defaultProfile.linux": "bash"
+      // },
+      "extensions": [
+        "redhat.vscode-xml",
+        "ms-python.python",
+        "ms-vscode.cpptools"
+	    ]
+    }
+  },
+  "workspaceMount": "source=${localEnv:HOME}/git/LearningRCR,target=/root/workspaces/openrave_ws/src/project_folder,type=bind",
+  "workspaceFolder": "/root/workspaces/openrave_ws/src/project_folder",
+  "forwardPorts": [3000]
+}
