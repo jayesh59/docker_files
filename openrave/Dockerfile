@@ -116,6 +116,7 @@ RUN mkdir workspaces && cd workspaces && \
    # git clone https://github.com/ros-planning/srdfdom.git && \
    # cd srdfdom && git checkout melodic-devel && \
    # cd ../../ && \
+    mkdir project_folder && \
     cd .. && \
     catkin_make && \
     source devel/setup.bash
@@ -127,4 +128,4 @@ RUN apt-get update
 RUN apt-get install -y xauth
 RUN apt-get install -y xorg openbox
 
-WORKDIR /root/workspaces/openrave_ws/src
+WORKDIR /root/workspaces/openrave_ws/src/project_folder
