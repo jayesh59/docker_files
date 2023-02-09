@@ -1,27 +1,37 @@
 # FROM ubuntu:18.04
 FROM osrf/ros:melodic-desktop-full-bionic
 ARG DEBIAN_FRONTEND=noninteractive
-ARG RAVE_COMMIT=2024b03554c8dd0e82ec1c48ae1eb6ed37d0aa6e
+ARG RAVE_COMMIT=7c5f5e27eec2b2ef10aa63fbc519a998c276f908
 ARG OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
+ARG BOOST_SRC_DIR=~/git/boost_1_58_0
 ENV QT_X11_NO_MITSHM=1
+
+WORKDIR /home/
+
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 #installing Dependencies
 RUN apt-get update && apt-get install -q -y \
     build-essential \
     git \
-    g++ \
+    gcc-4.8 \
+    g++-4.8 \
     cmake \
     python-pip \
     python-scipy \
     coreutils \
-    nano
+    nano \
+    vim
 RUN apt-get install -y --no-install-recommends build-essential doxygen \
     octave python-dev python-setuptools wget mlocate
 RUN apt-get install -y ros-melodic-chomp-motion-planner \
     ros-melodic-sbpl* \
     ros-melodic-ompl \
     ros-melodic-qt-ros
+RUN apt-get install ros-melodic-chomp-motion-planner ros-melodic-sbpl* ros-melodic-ompl ros-melodic-trac-ik-* ros-melodic-srdfdom*  -y
+RUN apt-get install liblapacke-dev libnewmat10*  libgsl-dev -y
+RUN python2.7 -m pip install matplotlib==2.2.0 --user
+RUN python2.7 -m pip install pydot==1.2.3
 RUN python2 -m pip install enum34 --user
 RUN python2 -m pip install networkx==2.2 --user
 RUN apt-get install -y --no-install-recommends ipython python-h5py python-numpy \
@@ -39,93 +49,66 @@ RUN apt-get install -y --no-install-recommends libccd-dev                  \
 RUN apt-get install -y --no-install-recommends libboost-all-dev libboost-python-dev
 RUN pip install pyopengl
 RUN apt install -y libgsl-dev
-RUN mkdir -p ~/git && \
-    cd ~/git && git clone https://github.com/Tencent/rapidjson.git && \
-    cd rapidjson && mkdir build && cd build && \
-    cmake .. && make -j `nproc` && make install
-RUN cd ~/git && git clone https://github.com/pybind/pybind11.git  && \
-    cd pybind11 && \
-    git config --local user.name crigroup && \
-    git config --local user.email crigroup@example.com && \
-    mkdir build && cd build && \
-    git remote add woody https://github.com/woodychow/pybind11.git \
-    && git remote add cielavenir https://github.com/cielavenir/pybind11.git \
-    && git fetch woody && git fetch cielavenir && git checkout v2.2.4 \
-    && git cherry-pick 94824d68a037d99253b92a5b260bb04907c42355 \
-    && git cherry-pick 98c9f77e5481af4cbc7eb092e1866151461e3508 \
-    && git cherry-pick dae2d434bd806eac67e38f3c49cfc91f46e4fd88 \
-    && git cherry-pick 2e08ce9ba75f5a2d87a6f12e6ab657ac78444e8e \
-    && cmake .. -DPYBIND11_TEST=OFF -DPythonLibsNew_FIND_VERSION=2 \
-    && make install
 
-#install collada-dom
 RUN mkdir -p ~/git; cd ~/git && \
-    git clone https://github.com/rdiankov/collada-dom.git && \
-    cd collada-dom && mkdir build && cd build && \
-    cmake .. && \
-    make -j `nproc` && \
-    make install
+   wget https://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz/download?use_mirror=autoselect -O ~/git/boost_1_58_0.tar.gz && \
+   tar -xzf boost_1_58_0.tar.gz && \
+   cd ~/git/boost_1_58_0/ && \
+   ./bootstrap.sh --exec-prefix=/usr/local && \
+   ./b2 -j `nproc` && \
+   ./b2 -j `nproc` install threading=multi && \
+   updatedb
+    
 
-#install osg
+
+# #install osg
 RUN mkdir -p ~/git; cd ~/git && \
     git clone https://github.com/openscenegraph/OpenSceneGraph.git && \
-    cd OpenSceneGraph; git reset --hard ${OSG_COMMIT} && \
+    cd OpenSceneGraph; git reset --hard 1f89e6eb1087add6cd9c743ab07a5bce53b2f480 && \
     mkdir build; cd build && \
     cmake -DDESIRED_QT_VERSION=4 .. && \
     make -j `nproc` && make install && make install_ld_conf
 
-#install FCL
+# #install FCL
 RUN mkdir -p ~/git; cd ~/git && \
     git clone https://github.com/flexible-collision-library/fcl && \
     cd fcl; git reset --hard 0.5.0 && \
     mkdir build; cd build && \
-    cmake .. -DFCL_BUILD_TESTS=OFF && \
+    cmake .. && \
     make -j `nproc` && \
     make install
 
-#installing Openrave
+# #installing Openrave
 RUN pip install --upgrade --user sympy==0.7.1 && pip install numpy
 RUN mkdir -p ~/git; cd ~/git && \
 	git clone -b production https://github.com/rdiankov/openrave.git && \
-    cd openrave; git reset --hard ${RAVE_COMMIT} && \
+    cd openrave; git reset --hard 7c5f5e27eec2b2ef10aa63fbc519a998c276f908 && \
     mkdir build; cd build && \
-    cmake -DODE_USE_MULTITHREAD=ON -DOSG_DIR=/usr/local/lib64/ \
-  		-DUSE_PYBIND11_PYTHON_BINDINGS=TRUE 			   \
-  		-DBoost_NO_BOOST_CMAKE=1 .. && \
+    cmake -DODE_USE_MULTITHREAD=ON -DCMAKE_CXX_STANDARD=11            \
+        -DBoost_NO_SYSTEM_PATHS=TRUE -DBOOST_ROOT=/usr/local/ .. && \
     make -j `nproc` && \
     make install
 
-#setting up workspace
+# #setting up workspace
 RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     apt update && apt install -y libompl-dev && \
-    echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc 
+    echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
+    echo "alias sb=source ~/.bashrc" >> ~/.bashrc
 
-WORKDIR /root
-RUN mkdir workspaces && cd workspaces && \
-    source /opt/ros/melodic/setup.bash && \
-    mkdir -p openrave_ws/src && \
-    cd openrave_ws/src && \
-    git clone https://github.com/personalrobotics/openrave_catkin.git && \
-    # git clone https://github.com/personalrobotics/or_ompl && \
-    # git clone https://github.com/personalrobotics/or_sbpl && \
-    # git clone https://github.com/personalrobotics/or_cdchomp && \
-    # git clone https://github.com/personalrobotics/comps && \
-    git clone https://github.com/personalrobotics/prpy && \
-    git clone https://github.com/personalrobotics/tsr && \
-   # git clone https://github.com/personalrobotics/or_urdf.git && \
-   # git clone https://github.com/ros-planning/srdfdom.git && \
-   # cd srdfdom && git checkout melodic-devel && \
-   # cd ../../ && \
-    mkdir project_folder && \
-    cd .. && \
+RUN source ~/.bashrc
+
+RUN cd ~/git && \
+    git clone https://github.com/AAIR-Lab/or_catkin.git && \
+    mkdir -p ~/tmp_catkin_ws/src/ && \
+    mv or_catkin/* ~/tmp_catkin_ws/src/ && \
+    cd ~/tmp_catkin_ws/ && \
     catkin_make && \
-    source devel/setup.bash
-
-RUN echo "source /root/workspaces/openrave_ws/devel/setup.bash" >> ~/.bashrc
+    echo "source ~/tmp_catkin_ws/devel/setup.bash" >> ~/.bashrc && \
+    sb
 
 #install x11 files
 RUN apt-get update
 RUN apt-get install -y xauth
 RUN apt-get install -y xorg openbox
 
-WORKDIR /root/workspaces/openrave_ws/src/project_folder
+
