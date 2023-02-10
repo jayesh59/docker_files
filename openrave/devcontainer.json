@@ -1,6 +1,6 @@
 {
-  "name": "openrave_gui",
-  "image": "openrave_gui:v0",
+  "name": "openrave:working",
+  "image": "openrave:working",
   // "build": { "dockerfile": "Dockerfile" },
   "containerEnv": {
     "DISPLAY":"${localEnv:DISPLAY}"
@@ -29,7 +29,6 @@
 	    ]
     }
   },
-  "workspaceMount": "source=${localEnv:HOME}/git/LearningRCR,target=/root/workspaces/openrave_ws/src/project_folder,type=bind",
-  "workspaceFolder": "/root/workspaces/openrave_ws/src/project_folder",
+
   "forwardPorts": [3000]
 }

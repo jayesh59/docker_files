@@ -6,9 +6,6 @@ ARG OSG_COMMIT=1f89e6eb1087add6cd9c743ab07a5bce53b2f480
 ARG BOOST_SRC_DIR=~/git/boost_1_58_0
 ENV QT_X11_NO_MITSHM=1
 
-WORKDIR /home/
-
-
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 #installing Dependencies
 RUN apt-get update && apt-get install -q -y \
@@ -93,15 +90,15 @@ RUN mkdir -p ~/git; cd ~/git && \
 RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     apt update && apt install -y libompl-dev && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
-    echo "alias sb=source ~/.bashrc" >> ~/.bashrc
+    echo 'alias sb="source ~/.bashrc"' >> ~/.bashrc
 
-RUN source ~/.bashrc && \
-    cd ~/git && \
+RUN cd ~/git && \
     git clone https://github.com/AAIR-Lab/or_catkin.git && \
     mkdir -p ~/tmp_catkin_ws/src/ && \
     mv or_catkin/* ~/tmp_catkin_ws/src/
 
-RUN cd ~/tmp_catkin_ws/ && \
+RUN source /opt/ros/melodic/setup.bash && \
+    cd ~/tmp_catkin_ws/ && \
     catkin_make && \
     echo "source ~/tmp_catkin_ws/devel/setup.bash" >> ~/.bashrc
     
