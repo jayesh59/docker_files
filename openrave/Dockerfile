@@ -22,8 +22,9 @@ RUN apt-get update && apt-get install -q -y \
     coreutils \
     nano \
     vim
+
 RUN apt-get install -y --no-install-recommends build-essential doxygen \
-    octave python-dev python-setuptools wget mlocate
+    octave python-dev python-setuptools wget mlocate python-tk
 RUN apt-get install -y ros-melodic-chomp-motion-planner \
     ros-melodic-sbpl* \
     ros-melodic-ompl \
@@ -49,6 +50,7 @@ RUN apt-get install -y --no-install-recommends libccd-dev                  \
 RUN apt-get install -y --no-install-recommends libboost-all-dev libboost-python-dev
 RUN pip install pyopengl
 RUN apt install -y libgsl-dev
+RUN pip install tqdm
 
 RUN mkdir -p ~/git; cd ~/git && \
    wget https://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz/download?use_mirror=autoselect -O ~/git/boost_1_58_0.tar.gz && \
@@ -59,8 +61,6 @@ RUN mkdir -p ~/git; cd ~/git && \
    ./b2 -j `nproc` install threading=multi && \
    updatedb
     
-
-
 # #install osg
 RUN mkdir -p ~/git; cd ~/git && \
     git clone https://github.com/openscenegraph/OpenSceneGraph.git && \
@@ -95,20 +95,17 @@ RUN apt-get update && apt-get install -y libompl12 python-catkin-tools && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
     echo "alias sb=source ~/.bashrc" >> ~/.bashrc
 
-RUN source ~/.bashrc
-
-RUN cd ~/git && \
+RUN source ~/.bashrc && \
+    cd ~/git && \
     git clone https://github.com/AAIR-Lab/or_catkin.git && \
     mkdir -p ~/tmp_catkin_ws/src/ && \
-    mv or_catkin/* ~/tmp_catkin_ws/src/ && \
-    cd ~/tmp_catkin_ws/ && \
-    catkin_make && \
-    echo "source ~/tmp_catkin_ws/devel/setup.bash" >> ~/.bashrc && \
-    sb
+    mv or_catkin/* ~/tmp_catkin_ws/src/
 
+RUN cd ~/tmp_catkin_ws/ && \
+    catkin_make && \
+    echo "source ~/tmp_catkin_ws/devel/setup.bash" >> ~/.bashrc
+    
 #install x11 files
 RUN apt-get update
 RUN apt-get install -y xauth
 RUN apt-get install -y xorg openbox
-
-
