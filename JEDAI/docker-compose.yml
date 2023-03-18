@@ -1,0 +1,29 @@
+version: '2'
+services:
+  novnc:  
+    image: theasp/novnc:latest
+    environment:
+      # Adjust to your screen size
+      - DISPLAY_WIDTH=650
+      - DISPLAY_HEIGHT=526
+      - RUN_XTERM=no
+    ports:
+      - ${NOVNC_PORT}:8080 #host_port:container_port
+
+  jedai:
+    image: jedai:dev
+    environment:
+      - DISPLAY=novnc:0.0
+    ports:
+    - ${JEDAI_PORT}:8000
+    depends_on:
+      - novnc
+    tty: true
+
+#export NOVNC_PORT=8080 JEDAI_PORT=8000 => only at first to add the variables to ENV_VARIABLES
+#
+# NOVNC_PORT=8080 JEDAI_PORT=8000 && docker-compose -p instance1 up -d
+    # PORT is setting the env variable but need to have PORT as a variable in host machine's variables
+    # -p <prefix> : sets the prefix for the docker services which allows to launch multiple instances of containers.
+      # still need to change the <prefix> name for each instance somehow. but as planning to run this command as a response to 
+      # a request to the webserver or something so this can actually be dynamically set using some logic.
