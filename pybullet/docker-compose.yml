@@ -1,0 +1,21 @@
+version: '2'
+services:
+  novnc:  
+    image: theasp/novnc:latest
+    environment:
+      # Adjust to your screen size
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+      - RUN_XTERM=no
+    ports:
+      - 8080:8080 #host_port:container_port
+
+  ros:
+    image: pybullet:latest
+    environment:
+      - DISPLAY=novnc:0.0
+    depends_on:
+      - novnc
+    tty: true
+
+

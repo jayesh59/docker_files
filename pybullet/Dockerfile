@@ -38,6 +38,8 @@ RUN python3 -m pip install pydot python-dotenv
 RUN apt-get install python3-numpy
 RUN python3 -m pip install -I cython numpy
 RUN python3 -m pip install pybind11 stable-baselines3 gym tqdm pybullet
+RUN apt-get install castxml
+RUN python3 -m pip install -vU pygccxml pyplusplus
 
 RUN apt-get update
 RUN apt-get install -y xauth
