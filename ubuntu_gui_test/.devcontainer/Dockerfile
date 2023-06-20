@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:18.04
 ARG DEBIAN_FRONTEND=noninteractive
 ENV QT_X11_NO_MITSHM=1
 ENV LC_ALL="en_US.UTF-8"
@@ -6,15 +6,15 @@ ENV LC_ALL="en_US.UTF-8"
 RUN apt-get update && apt-get install -q -y \
     build-essential \
     git \
-    g++ \
-    cmake \
-    python-pip \
-    python-scipy \
+    python3-pip \
     coreutils \
-    nano
+    nano \
+    vim \
+    tmux \
+    curl 
 
 RUN apt-get update
 RUN apt-get install -y xauth
 RUN apt-get install -y xorg openbox
 
-RUN apt install -y firefox
+# RUN curl -sSL http://get.gazebosim.org | sh
