@@ -14,7 +14,7 @@ services:
       - 8080:8080 #host_port:container_port
 
   ros:
-    image: ros_gui:latest
+    image: ros_gui:hsr
     environment:
       - DISPLAY=novnc:0.0
 #    ports:

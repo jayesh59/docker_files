@@ -1,0 +1,37 @@
+{
+  "name": "openrave:working",
+  "image": "openrave:working",
+
+  "containerEnv": {
+    // for normal operation
+    "DISPLAY":"${localEnv:DISPLAY}"
+  },
+
+  //for normal operation
+  "runArgs": ["--hostname=en4113965l"],
+  
+  //for remote docker x11
+  // "runArgs": ["--net", "host",
+  //             "-e","DISPLAY=${localEnv:REMOTE_DISPLAY}"
+  //            ],
+  
+  "mounts": [
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.Xauthority,target=/root/.Xauthority,type=bind,consistency=cached",
+    
+    //for remote_docker_setup
+    // "source=${localEnv:HOME}/display/ssh_config,target=/etc/ssh/ssh_config,type=bind,consistency=cached"
+  ],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode.cpptools",
+        "Gruntfuggly.todo-tree"
+        ]
+    }
+  },
+
+  "forwardPorts": [3000]
+}

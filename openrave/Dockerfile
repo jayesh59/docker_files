@@ -75,11 +75,11 @@ RUN apt-get install -q -y --no-install-recommends \
     libnewmat10* \
     libgsl-dev \
     libcairo2-dev \
-    # libjasper-dev \
     libpoppler-glib-dev \
     libsdl2-dev \
     libtiff5-dev \
-    libxrandr-dev
+    libxrandr-dev \
+    libyaml-cpp-dev
 
 RUN apt update && apt install -q -y --no-install-recommends \
     python-rosinstall \
@@ -165,8 +165,7 @@ RUN cd ~/git && \
     rm -rf ~/git/or_catkin/openrave-installation/ && \
     mv or_catkin/* ~/tmp_catkin_ws/src/ && \
     rm -rf or_catkin/
-
-RUN apt-get install -y -q --no-install-recommends libyaml-cpp-dev
+ 
 RUN source /opt/ros/melodic/setup.bash && \
     cd ~/tmp_catkin_ws/ && \
     catkin_make && \
