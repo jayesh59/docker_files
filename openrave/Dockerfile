@@ -174,4 +174,4 @@ RUN source /opt/ros/melodic/setup.bash && \
 #install x11 files
 RUN apt-get update
 RUN apt-get install -y xauth
-RUN apt-get install -y xorg openbox
+RUN apt-get install -y xorg openbox htop openssh-client
