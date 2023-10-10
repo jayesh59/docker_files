@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 ARG DEBIAN_FRONTEND=noninteractive
 ENV QT_X11_NO_MITSHM=1
 ENV LC_ALL="en_US.UTF-8"
@@ -11,7 +11,10 @@ RUN apt-get update && apt-get install -q -y \
     nano \
     vim \
     tmux \
-    curl 
+    curl \
+    openssh-client \
+    htop \
+    mesa-utils
 
 RUN apt-get update
 RUN apt-get install -y xauth
