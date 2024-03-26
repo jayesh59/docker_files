@@ -15,7 +15,7 @@ RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt install -y python3
 
 RUN apt-get update && \
-    apt-get install -y python3-rosdep && \
+    apt-get install python3-rosdep && \
     rosdep init && rosdep update
     
 RUN apt-get update && apt-get install -q -y \
@@ -100,7 +100,7 @@ RUN apt-get install -y xorg openbox
 
 #installing trac_ik and other ros independent packages    
 RUN source /opt/ros/melodic/setup.bash && \
-    mkdir -p ~/git/ros_independent_installs/src && cd ~/git/ros_independent_installs/src/ && \
+    mkdir -p ~/git/ros_independent_installs/src && cd ~/git/ros_independent_installs/src && \
     # git clone https://github.com/jayesh59/trac_ik.git && \
     # wstool init && \
     # wstool set -y src/geometry2 --git https://github.com/ros/geometry2 -v 0.6.7 && \

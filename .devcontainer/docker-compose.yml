@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  openrave:
-    image: openrave:working
+  ubuntu:
+    image: ubuntu_gui:test
     # build: .
     privileged: true
     tty: true

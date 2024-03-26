@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 ENV QT_X11_NO_MITSHM=1
 ENV LC_ALL="en_US.UTF-8"
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -q -y \
     htop \
     mesa-utils \
     wget \
-    iputils-ping \ 
+    iputils-ping \
     net-tools 
 
 RUN apt-get update

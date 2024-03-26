@@ -19,6 +19,8 @@ services:
       - DISPLAY=novnc:0.0
     ports:
     - ${JEDAI_PORT}:8000
+    volumes:
+      - ${HOME}/JEDAI/logs:/root/git/JEDAI/logs_dir
     depends_on:
       - novnc
     command: bash -c "/root/git/JEDAI/start_jedai.sh && tail -f /dev/null"

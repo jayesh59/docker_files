@@ -1,0 +1,38 @@
+{
+  "name": "openrave:working",
+  "image": "openrave:working",
+  "containerEnv": {
+    // for normal operation
+    // "DISPLAY":"${localEnv:DISPLAY}"
+  },
+
+  //for normal operation
+  // "runArgs": ["--hostname=en4110026l.dhcp.asu.edu"],
+  
+  //for remote docker x11
+  "runArgs": ["--net", "host",
+              "-e","DISPLAY=172.31.22.200:0",
+              // "-e", "LIBGL_ALWAYS_INDIRECT=0", //for opengl applications only.
+              "-e", "COIN_FULL_INDIRECT_RENDERING=1" //for this image for only (for now), need to check if this works with the pybullet thing or does it break that.
+             ],
+  
+  "mounts": [
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.Xauthority,target=/root/.Xauthority,type=bind,consistency=cached",
+    
+    //for remote_docker_setup
+    // "source=${localEnv:HOME}/display/ssh_config,target=/etc/ssh/ssh_config,type=bind,consistency=cached"
+  ],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode.cpptools",
+        "Gruntfuggly.todo-tree"
+        ]
+    }
+  },
+
+  "forwardPorts": [3000]
+}
