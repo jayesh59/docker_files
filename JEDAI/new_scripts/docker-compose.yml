@@ -1,0 +1,36 @@
+version: '2'
+services:
+  novnc:  
+    image: novnc:jedai
+#    image: theasp/novnc:latest
+    environment:
+      # Adjust to your screen size
+     # - DISPLAY_WIDTH=1920
+     # - DISPLAY_HEIGHT=1080
+      - DISPLAY_WIDTH=650
+      - DISPLAY_HEIGHT=526
+      - RUN_XTERM=no
+    ports:
+      - ${NOVNC_PORT}:8080 #host_port:container_port
+
+  jedai:
+    image: jedai:${USER}
+    environment:
+      - DISPLAY=novnc:0.0
+    ports:
+    - ${JEDAI_PORT}:8000
+      #volumes:
+      #- ${HOME}/jedai_ed_ijcai24_logs:/root/git/JEDAI/logs_dir
+    depends_on:
+      - novnc
+    # command: bash -c "/root/git/JEDAI/start_jedai.sh && tail -f /dev/null"
+    command: bash -c "tail -f /dev/null"
+    tty: true
+
+#export NOVNC_PORT=8080 JEDAI_PORT=8000 => only at first to add the variables to ENV_VARIABLES
+#
+# NOVNC_PORT=8080 JEDAI_PORT=8000 && docker-compose -p instance1 up -d
+    # PORT is setting the env variable but need to have PORT as a variable in host machine's variables
+    # -p <prefix> : sets the prefix for the docker services which allows to launch multiple instances of containers.
+      # still need to change the <prefix> name for each instance somehow. but as planning to run this command as a response to 
+      # a request to the webserver or something so this can actually be dynamically set using some logic.
